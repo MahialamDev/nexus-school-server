@@ -22,7 +22,22 @@ router.post("/", async (req, res) => {
     const db = getDB();
 
     const userInfo = req.body;
-    
+
+    // Email
+    if (!userInfo.email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    // check existing
+    const existingUser = await db
+      .collection("users")
+      .findOne({ email: userInfo.email });
+
+    if (existingUser) {
+      return res.status(409).json({
+        message: "User already exists",
+      });
+    }
 
 
     userInfo.role = "student";

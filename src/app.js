@@ -15,8 +15,20 @@ connectDB();
 
 // routes
 app.get('/', (req, res) => {
-    res.send("Rahat Your server is running")
-}) 
+    res.status(200).json({
+        status: "success",
+        message: "NexSchool server is running smoothly 🚀",
+        timestamp: new Date().toISOString(),
+        info: {
+            name: "NexSchool API",
+            version: "1.0.0",
+            environment: process.env.NODE_ENV || "development"
+        }
+    });
+});
+
+
+
 
 
 // user Router

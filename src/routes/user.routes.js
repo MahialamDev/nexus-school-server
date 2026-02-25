@@ -22,6 +22,9 @@ router.post("/", async (req, res) => {
     const db = getDB();
 
     const userInfo = req.body;
+    
+
+
     userInfo.role = "student";
     userInfo.createdAt = new Date();
 

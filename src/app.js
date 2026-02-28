@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const { connectDB } = require('./config/db'); // db.js path
 const userRouter = require('./routes/user.routes')
+const noticeRouter = require('./routes/notice.routes')
 
 // middleware
 app.use(express.json());
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
 
 // user Router
 app.use('/users', userRouter)
+app.use('/notices', noticeRouter)
 
 
 

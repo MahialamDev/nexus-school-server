@@ -13,6 +13,41 @@ router.get("/", async (req, res) => {
   }
 });
 
+// user info by email
+router.get("/:email", async (req, res) => {
+  try {
+    const db = getDB();
+    const email = req.params.email;
+
+    const user = await db.collection("users").findOne({ email: email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found in Nexus database" });
+    }
+    res.send(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// user role by email
+router.get("/role/:email", async (req, res) => {
+  try {
+    const db = getDB();
+    const email = req.params.email;
+    const user = await db.collection("users").findOne({ email: email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.send({ role: user.role });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 
 
 // insert user data

@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 
 
 // user Router
-app.use('/api/users', userRouter)
+app.use('/users', userRouter)
 
 
 

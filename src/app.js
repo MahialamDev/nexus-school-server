@@ -4,7 +4,8 @@ const cors = require('cors');
 
 const userRouter = require('./routes/user.routes')
 const noticeRouter = require('./routes/notice.routes')
-const assignmentRouter = require('./routes/assignment.routes')
+const assignmentRouter = require('./routes/assignment.routes');
+const studentsRout =require('./routes/students.routes')
 
 // middleware
 app.use(express.json());
@@ -34,7 +35,10 @@ app.use('/notices', noticeRouter)
 
 
 // teacher 
-app.use('/assignments', assignmentRouter)
+app.use('/assignments', assignmentRouter);
+
+//students
+app.use('/student',studentsRout)
 
 
 

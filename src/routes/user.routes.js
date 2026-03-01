@@ -49,22 +49,6 @@ router.get("/role/:email", async (req, res) => {
   }
 });
 
-// get only student
-router.get('/all-students', async (req, res) => {
- try {
-   const db = getDB();
-   if (!db) {
-    return res.status(500).send({ message: 'DB not connected' });
-   }
-   const role = 'student';
-   const query = { role: role };
-   const result = await db.collection('users').find(query).toArray();
-   console.log(result)
-   res.send(result);
- } catch (error) {
-  console.log(error)
- }
-})
 
 
 

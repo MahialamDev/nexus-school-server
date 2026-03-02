@@ -77,6 +77,7 @@ router.post("/", async (req, res) => {
       role: "student", // default role is student
       phone: userInfo.phone || "Not Set",
       address: userInfo.address || "Not Set",
+      department: userInfo.department || "Not Set",
       createdAt: new Date()
     };
 
@@ -107,7 +108,19 @@ router.patch("/:email", async (req, res) => {
   }
 });
 
+// get students by role
+router.get("/students/all", async (req, res) => {
+  try {
+    const db = getDB();
+    const students = await db.collection("users")
+      .find({ role: "student" })
+      .toArray();
 
+    res.send(students);
+  } catch (err) {
+    res.status(500).json({ message: "Server Error" });
+  }
+});
 
 // export router
 module.exports = router;

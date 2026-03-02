@@ -74,6 +74,7 @@ router.post("/", async (req, res) => {
       role: "student", // default role is student
       phone: userInfo.phone || "Not Set",
       address: userInfo.address || "Not Set",
+      department: userInfo.department || "Not Set",
       createdAt: new Date()
     };
 

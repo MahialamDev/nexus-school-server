@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const { connectDB } = require('./config/db'); // db.js path
 const userRouter = require('./routes/user.routes')
+const attendanceRouter = require('./routes/attendance.routes');
 const noticeRouter = require('./routes/notice.routes')
 const assignmentRouter = require('./routes/assignment.routes')
 
@@ -35,6 +36,7 @@ app.get('/', (req, res) => {
 
 // user Router
 app.use('/users', userRouter)
+app.use('/attendance', attendanceRouter);
 app.use('/notices', noticeRouter)
 
 

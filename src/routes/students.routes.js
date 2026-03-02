@@ -82,7 +82,7 @@ router.post('/feedback', async (req, res) => {
        teacherEmail,
        subject,
        class: studentClass,
-       feedback,
+       feedback:req.body.feedback,
        role,
        feedbackAt: new Date(),
      };

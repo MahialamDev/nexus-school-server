@@ -19,12 +19,20 @@ const client = new MongoClient(uri, {
 let db;
 
 
+
 const connectDB = async function run() {
   try {
     await client.connect();
     db = client.db('nexus-school');
-     console.log('Mongodb connected!');
+    let feedbackCollection = db.collection('studentFeedback');
+
+    await feedbackCollection.createIndex(
+      { feedbackAt: 1 },
+      { expireAfterSeconds: 86400 },
+    );
     
+     console.log('Mongodb connected!');
+   
   } catch (err) {
       console.log(err)
   }

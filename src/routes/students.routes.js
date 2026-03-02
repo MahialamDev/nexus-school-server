@@ -19,19 +19,17 @@ router.get('/', async (req, res) => {
  }
 })
 
+
 // get student feedback data 
 router.get('/feedback', async (req, res) => {
   try {
-    const db = getDB();
+   const db= getDB()
     const email = req.query.email;
     if (!email) {
       return res.send({ message: 'not found' });
     }
     const query = { studentEmail: email, role: 'student' };
-    const result = await db
-      .collection('studentFeedback')
-      .find( query )
-      .toArray();
+    const result = await db.collection('studentFeedback').find(query).toArray();
     res.send(result);
   } catch (error) {
     console.log(error)
@@ -43,15 +41,55 @@ router.get('/feedback', async (req, res) => {
 router.post('/feedback', async (req, res) => {
   try {
     const db = getDB();
-    const feedback = req.body;
-    feedback.feedbackAt = new Date();
-    if (feedback.length === 0) {
-      return res.status(404).send({ message: 'plz send data' });
-    }
-    const result = await db.collection('studentFeedback').insertOne(feedback);
-    res.send(result)
+    const {
+      studentEmail,
+      teacherEmail,
+      subject,
+      class: studentClass,
+      studentId,
+     role
+    } = req.body;
 
-   
+    // ✅ validation
+    if (!studentEmail || !teacherEmail || !subject || !studentClass) {
+      return res.send({ message: 'Missing required fields' });
+    }
+    // only new date
+    
+    // count all day hours
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    //  duplicate check
+    const existing = await db.collection('studentFeedback').findOne({
+        studentEmail,
+        teacherEmail,
+        subject,
+        class: feedback.class,
+        feedbackAt: { $gte: startOfDay },
+      });
+
+    // block feedback
+    if (existing) {
+      return res.send({
+        message: 'আজকে এই subject-এ already feedback দেওয়া হয়েছে',
+      });
+    }
+
+    // new feedback
+    const feedback = {
+       studentId,
+       studentEmail,
+       teacherEmail,
+       subject,
+       class: studentClass,
+       feedback,
+       role,
+       feedbackAt: new Date(),
+     };
+
+    // final post data
+    const result = await db.collection('studentFeedback').insertOne(feedback);
+    res.send(result);
   } catch (error) {
     console.log(error)
   }
@@ -59,3 +97,4 @@ router.post('/feedback', async (req, res) => {
  
 
 module.exports = router;
+

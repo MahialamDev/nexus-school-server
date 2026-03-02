@@ -1,20 +1,16 @@
 const express = require("express");
 const app = express();
 const cors = require('cors');
-const { connectDB } = require('./config/db'); // db.js path
+
 const userRouter = require('./routes/user.routes')
 const attendanceRouter = require('./routes/attendance.routes');
 const noticeRouter = require('./routes/notice.routes')
-const assignmentRouter = require('./routes/assignment.routes')
+const assignmentRouter = require('./routes/assignment.routes');
+const studentsRout =require('./routes/students.routes')
 
 // middleware
 app.use(express.json());
 app.use(cors());
-
-
-// mongodb connect
-connectDB();
-
 
 // routes
 app.get('/', (req, res) => {
@@ -41,7 +37,10 @@ app.use('/notices', noticeRouter)
 
 
 // teacher 
-app.use('/assignments', assignmentRouter)
+app.use('/assignments', assignmentRouter);
+
+//students
+app.use('/student',studentsRout)
 
 
 

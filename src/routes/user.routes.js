@@ -1,6 +1,7 @@
 const express = require("express");
+const { getDB } = require("../config/db");// db.js path
 const router = express.Router();
-const { getDB } = require("../config/db"); // db.js path
+ 
 
 router.get("/", async (req, res) => {
   try {
@@ -47,6 +48,8 @@ router.get("/role/:email", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+
 
 
 

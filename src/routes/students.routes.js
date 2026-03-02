@@ -54,7 +54,7 @@ router.post('/feedback', async (req, res) => {
     if (!studentEmail || !teacherEmail || !subject || !studentClass) {
       return res.send({ message: 'Missing required fields' });
     }
-    // only new date
+    
     
     // count all day hours
     const startOfDay = new Date();
@@ -64,7 +64,7 @@ router.post('/feedback', async (req, res) => {
         studentEmail,
         teacherEmail,
         subject,
-        class: feedback.class,
+        class:studentClass,
         feedbackAt: { $gte: startOfDay },
       });
 

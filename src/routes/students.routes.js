@@ -6,7 +6,7 @@ const {getDB}=require('../config/db')
 router.get('/', async (req, res) => {
  try {
    const db = getDB();
-   const { department } = req.query;
+   const { department,limit,skip } = req.query;
    
    if (!db) {
     return res.status(500).send({ message: 'DB not connected' });
@@ -16,9 +16,11 @@ router.get('/', async (req, res) => {
    if (department) {
      query.department = department;
    }
-   const result = await db.collection('users').find(query).toArray();
-   console.log(result)
-   res.send(result);
+   const result = await db.collection('users').find(query).limit(Number(limit)).skip(Number(skip)).toArray();
+   
+   const allStudent =await  db.collection('users').countDocuments(query);
+   
+   res.send({result: result ,allStudent});
  } catch (error) {
   console.log(error)
  }
@@ -69,8 +71,7 @@ router.post('/feedback', async (req, res) => {
     //  duplicate check
     const existing = await db.collection('studentFeedback').findOne({
         studentEmail,
-      teacherEmail,
-        teacherName,
+        teacherEmail,
         subject,
         class:studentClass,
         feedbackAt: { $gte: startOfDay },
@@ -88,6 +89,7 @@ router.post('/feedback', async (req, res) => {
        studentId,
        studentEmail,
        teacherEmail,
+       teacherName,
        subject,
        class: studentClass,
        feedback:req.body.feedback,

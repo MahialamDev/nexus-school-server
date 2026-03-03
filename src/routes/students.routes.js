@@ -6,11 +6,16 @@ const {getDB}=require('../config/db')
 router.get('/', async (req, res) => {
  try {
    const db = getDB();
+   const { department } = req.query;
+   
    if (!db) {
     return res.status(500).send({ message: 'DB not connected' });
    }
    const role = 'student';
-   const query = { role: role };
+   const query = { role: role, };
+   if (department) {
+     query.department = department;
+   }
    const result = await db.collection('users').find(query).toArray();
    console.log(result)
    res.send(result);
@@ -44,9 +49,11 @@ router.post('/feedback', async (req, res) => {
     const {
       studentEmail,
       teacherEmail,
+      teacherName,
       subject,
       class: studentClass,
       studentId,
+
      role
     } = req.body;
 
@@ -62,7 +69,8 @@ router.post('/feedback', async (req, res) => {
     //  duplicate check
     const existing = await db.collection('studentFeedback').findOne({
         studentEmail,
-        teacherEmail,
+      teacherEmail,
+        teacherName,
         subject,
         class:studentClass,
         feedbackAt: { $gte: startOfDay },

@@ -56,7 +56,7 @@ router.delete("/:id", async (req, res) => {
         const db = getDB();
         const id = req.params.id;
 
-        // ২. চেক করুন আইডিটি ভ্যালিড কি না
+        // validate ObjectId
         if (!ObjectId.isValid(id)) {
             return res.status(400).json({ message: "Invalid Notice ID" });
         }

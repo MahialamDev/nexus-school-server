@@ -6,7 +6,8 @@ const userRouter = require('./routes/user.routes')
 const attendanceRouter = require('./routes/attendance.routes');
 const noticeRouter = require('./routes/notice.routes')
 const assignmentRouter = require('./routes/assignment.routes');
-const studentsRout =require('./routes/students.routes')
+const studentsRout = require('./routes/students.routes');
+const routine = require('./routes/routine.routes')
 
 // middleware
 app.use(express.json());
@@ -40,7 +41,10 @@ app.use('/notices', noticeRouter)
 app.use('/assignments', assignmentRouter);
 
 //students
-app.use('/student',studentsRout)
+app.use('/student', studentsRout)
+
+//routine routes
+app.use('/routine',routine)
 
 
 

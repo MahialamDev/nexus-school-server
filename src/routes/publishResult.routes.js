@@ -3,7 +3,19 @@ const router = express.Router();
 const { getDB } = require('../config/db');
 
 
-
+// get result sheet 
+router.get('/', async (req, res) => {
+  try {
+    const db = getDB();
+    const { studentRoll, className, examOption, studentEmail } = req.query;
+    const query = { studentEmail, studentRoll,examOption};
+    const result = await db.collection('result').findOne(query);
+    res.send(result);
+  
+ } catch (error) {
+  console.log(error)
+ }
+})
 
 // post Result Sheet data
 router.post('/', async (req, res) => {
@@ -13,6 +25,7 @@ router.post('/', async (req, res) => {
     req.body
     
     const body = req.body;
+    body.studentName = body.studentName.toLowerCase();
     const query = {
       studentEmail,
       studentName,

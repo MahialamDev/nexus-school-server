@@ -6,7 +6,8 @@ const {getDB} = require('../config/db')
 
 router.get('/', async (req, res) => {
     const db = getDB();
-     const result = await db.collection('exam-routine').find().toArray();
+    const result = await db.collection('exam-routine').find().toArray();
+    res.send(result)
 })
 
 

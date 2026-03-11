@@ -9,6 +9,7 @@ const assignmentRouter = require('./routes/assignment.routes');
 const studentsRout = require('./routes/students.routes');
 const routine = require('./routes/routine.routes');
 const result = require('./routes/publishResult.routes')
+const admissionRouter =require('./routes/admission.routes')
 
 // middleware
 app.use(express.json());
@@ -48,6 +49,9 @@ app.use('/student', studentsRout)
 app.use('/routine',routine)
 //Result Sheet routes
 app.use('/result',result)
+
+// admission
+app.use('/admission', admissionRouter)
 
 
 

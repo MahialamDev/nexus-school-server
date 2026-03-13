@@ -10,6 +10,8 @@ const studentsRout = require('./routes/students.routes');
 const routine = require('./routes/routine.routes');
 const result = require('./routes/publishResult.routes')
 const admissionRouter =require('./routes/admission.routes')
+const examRoutine = require('./routes/examRoutine.routes')
+const bookingRouter =require('./routes/booking.routes')
 
 // middleware
 app.use(express.json());
@@ -41,6 +43,7 @@ app.use('/notices', noticeRouter)
 
 // teacher 
 app.use('/assignments', assignmentRouter);
+app.use('/exam-routine', examRoutine);
 
 //students
 app.use('/student', studentsRout)
@@ -52,6 +55,8 @@ app.use('/result',result)
 
 // admission
 app.use('/admission', admissionRouter)
+// booking
+app.use('/bookings', bookingRouter)
 
 
 

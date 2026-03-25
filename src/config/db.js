@@ -22,7 +22,7 @@ let db;
 
 const connectDB = async function run() {
   try {
-    await client.connect();
+    // await client.connect();
     db = client.db('nexus-school');
     let feedbackCollection = db.collection('studentFeedback');
 

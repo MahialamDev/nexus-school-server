@@ -1,6 +1,7 @@
 const express = require("express");
 const { getDB } = require("../config/db");
 const { generateUniqueStudentId } = require("../utils/generateStudentId");
+const generateStudentRoll = require("../utils/generateStudentRoll");
 const router = express.Router();
 
 // all user get
@@ -83,7 +84,11 @@ router.post("/", async (req, res) => {
     const className = userInfo.department || "class-6";
     const year = new Date().getFullYear();
 
-    const student_id = await generateUniqueStudentId(db, userInfo.name, className, year )
+    // id generate
+    const student_id = await generateUniqueStudentId(db, userInfo.name, className, year);
+
+    // roll generate
+    const class_roll = await generateStudentRoll(db, className, year )
 
     const newUser = {
       name: userInfo.name || "Anonymous",
@@ -91,6 +96,7 @@ router.post("/", async (req, res) => {
       image: userInfo.image || "",
       role: "student",
       student_id,
+      class_roll,
       phone: userInfo.phone || "Not Set",
       address: userInfo.address || "Not Set",
       department: className,

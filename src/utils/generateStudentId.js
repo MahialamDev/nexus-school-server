@@ -4,18 +4,17 @@ async function generateUniqueStudentId(db, name, className, year) {
 
   const counterId = `student_serial_${year}`;
 
-  // findOneAndUpdate এর মাধ্যমেই চেক এবং ইনক্রিমেন্ট একবারে করা সম্ভব
+  // findOneAndUpdate 
   const counter = await db.collection("counters").findOneAndUpdate(
     { _id: counterId },
     { $inc: { seq: 1 } },
     { 
-      upsert: true,           // যদি না থাকে তবে তৈরি করবে
-      returnDocument: "after" // আপডেটেড ডাটা রিটার্ন করবে
+      upsert: true,           // if no data then add new
+      returnDocument: "after" //return update data
     }
   );
 
-  // ড্রাইভার ভার্সন অনুযায়ী ডাটা এক্সট্রাক্ট করা
-  // কিছু ভার্সনে সরাসরি counter, কিছুতে counter.value থাকে
+  // driver version fix
   const seq = (counter.value ? counter.value.seq : counter.seq);
 
   const serial = seq.toString().padStart(4, "0"); 

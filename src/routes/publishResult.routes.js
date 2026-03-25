@@ -7,8 +7,8 @@ const { getDB } = require('../config/db');
 router.get('/', async (req, res) => {
   try {
     const db = getDB();
-    const { studentRoll,  examOption, studentEmail } = req.query;
-    const query = { studentEmail, studentRoll, examOption };
+    const { studentRoll,  examOption, className, studentEmail } = req.query;
+    const query = { examOption, studentRoll, className, studentEmail };
     const result = await db.collection('result').findOne(query);
     res.send(result);
   
@@ -65,11 +65,11 @@ router.post('/', async (req, res) => {
     body.createAt = new Date();
     const query = {
       studentEmail,
-      studentName,
       studentRoll,
       className,
       examOption,
-    };
+    }
+
 
     const sheet = await db.collection('result').findOne(query);
     if (sheet) {

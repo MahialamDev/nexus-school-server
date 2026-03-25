@@ -24,6 +24,7 @@ router.post('/', async (req, res) => {
   try {
     const db = getDB();
     const routine = req.body;
+    routine.createAt = new Date();
    
     const query = {
       day: routine.day,

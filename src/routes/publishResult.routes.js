@@ -57,7 +57,7 @@ router.get('/student-result', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const db = getDB();
-    const { studentRoll, className, examOption, studentName, studentEmail } =
+    const { studentRoll, className, examOption,  studentEmail } =
     req.body
     
     const body = req.body;
@@ -65,7 +65,6 @@ router.post('/', async (req, res) => {
     body.createAt = new Date();
     const query = {
       studentEmail,
-      studentRoll,
       className,
       examOption,
     }

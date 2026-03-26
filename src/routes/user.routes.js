@@ -1,5 +1,6 @@
 const express = require("express");
 const { getDB } = require("../config/db");
+const { generateUniqueStudentId } = require("../utils/generateStudentId");
 const router = express.Router();
 
 // all user get
@@ -66,6 +67,8 @@ router.get("/:email", async (req, res) => {
   }
 });
 
+
+
 // post new user
 router.post("/", async (req, res) => {
   try {
@@ -75,15 +78,25 @@ router.post("/", async (req, res) => {
 
     const existingUser = await db.collection("users").findOne({ email: userInfo.email });
     if (existingUser) return res.status(409).json({ message: "User already exists" });
+     
+    // Set className default to class-6 if not provided
+    const className = userInfo.department || "class-6";
+    const year = new Date().getFullYear();
+
+    const student_id = await generateUniqueStudentId(db, userInfo.name, className, year )
 
     const newUser = {
       name: userInfo.name || "Anonymous",
       email: userInfo.email,
       image: userInfo.image || "",
       role: "student",
+      student_id,
       phone: userInfo.phone || "Not Set",
       address: userInfo.address || "Not Set",
-      department: userInfo.department || "Not Set",
+      department: className,
+      status: "active",               // active | graduated
+      enrollment_status: "enrolled",  // enrolled | pending | not_enrolled
+      academic_year: year, 
       createdAt: new Date()
     };
 

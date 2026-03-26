@@ -6,7 +6,8 @@ const userRouter = require('./routes/user.routes')
 const attendanceRouter = require('./routes/attendance.routes');
 const noticeRouter = require('./routes/notice.routes')
 const assignmentRouter = require('./routes/assignment.routes');
-const studentsRout = require('./routes/students.routes');
+// plolok vai er student route changed to studentFeedback router
+const studentsFeedbackRouter = require('./routes/studentsFeedback.routes');
 const routine = require('./routes/routine.routes');
 const result = require('./routes/publishResult.routes')
 const admissionRouter =require('./routes/admission.routes')
@@ -46,7 +47,7 @@ app.use('/assignments', assignmentRouter);
 app.use('/exam-routine', examRoutine);
 
 //students
-app.use('/student', studentsRout)
+app.use('/student', studentsFeedbackRouter)
 
 //routine routes
 app.use('/routine',routine)

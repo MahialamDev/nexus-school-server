@@ -60,7 +60,7 @@ router.post('/feedback', async (req, res) => {
     } = req.body;
 
     // ✅ validation
-    if (!studentEmail || !teacherEmail || !subject || !studentClass) {
+    if (!studentEmail || !teacherEmail || !teacherName ) {
       return res.send({ message: 'Missing required fields' });
     }
     
@@ -72,8 +72,8 @@ router.post('/feedback', async (req, res) => {
     const existing = await db.collection('studentFeedback').findOne({
         studentEmail,
         teacherEmail,
-        subject,
-        class:studentClass,
+        teacherName,
+        
         feedbackAt: { $gte: startOfDay },
       });
 

@@ -76,7 +76,7 @@ router.patch("/:id", async (req, res) => {
       email: studentInfo.email,
     });
 
-    const className = studentInfo.class;
+    const className = studentInfo.class_name;
     const year = new Date().getFullYear();
 
     let student_id = null;
@@ -113,7 +113,7 @@ router.patch("/:id", async (req, res) => {
         admission_id: studentInfo._id,
         name: studentInfo.name,
         email: studentInfo.email,
-        class: className,
+        class_name: className,
         phone: studentInfo.phone || "Not Set",
         address: studentInfo.address || "Not Set",
         student_id,
@@ -138,6 +138,7 @@ router.patch("/:id", async (req, res) => {
           status: "active",
           createdAt: new Date(),
         });
+
       } else {
         // Just update role if needed
         if (user.role !== "student") {

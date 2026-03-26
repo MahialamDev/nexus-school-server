@@ -2,15 +2,21 @@ const express = require('express');
 const router = express.Router();
 const { getDB } = require('../config/db');
 const { ObjectId } = require('mongodb');
+const { generateUniqueStudentId } = require("../utils/generateStudentId");
+const generateStudentRoll = require("../utils/generateStudentRoll");
+
 // post method for admission application
 router.post('/', async (req, res) => {
     try {
         const db = getDB();
         if (!db) return res.status(500).send('DB not connected');
+        const applicationInfo = req.body;
+        const name = await applicationInfo.firstName + ' ' + applicationInfo.lastName;
 
         const applicationData = {
+            name,
             ...req.body,
-            status: 'pending', 
+            application_status: 'pending', 
             submittedAt: new Date()
         };
 
@@ -41,24 +47,57 @@ router.get('/', async (req, res) => {
 
 // PATCH method for updating application status (Admin only)
 router.patch('/:id', async (req, res) => {
-    try {
-        const db = getDB();
-        const { id } = req.params;
-        const { status } = req.body; // UPDATE FRONTEND STATUS
+  try {
+    const db = getDB();
+    const { id } = req.params;
+    const { status } = req.body;
 
-        if (!db) return res.status(500).send('DB not connected');
+    if (!db) return res.status(500).send("DB not connected");
 
-        const filter = { _id: new ObjectId(id) };
-        const updateDoc = {
-            $set: { status: status },
-        };
+    const filter = { _id: new ObjectId(id) };
 
-        const result = await db.collection('admissions').updateOne(filter, updateDoc);
-        res.status(200).send(result);
-    } catch (error) {
-        res.status(500).send({ message: "Update failed", error: error.message });
+    const studentInfo = await db.collection("admissions").findOne(filter);
+
+    if (!studentInfo) {
+      return res.status(404).send({ message: "Admission not found" });
     }
+
+    const className = studentInfo.class;
+    const year = new Date().getFullYear();
+
+    let student_id = null;
+    let roll = null;
+
+    // only generate when approved
+    if (status === "approved") {
+      student_id = await generateUniqueStudentId(
+        db,
+        studentInfo.name,
+        className,
+        year
+      );
+
+      roll = await generateStudentRoll(db, className, year);
+    }
+
+    const updateDoc = {
+      $set: {
+        application_status: status,
+        student_id,
+        roll,
+        enrollment_status: status === "approved" ? "enrolled" : "pending",
+        academic_year: year,
+      },
+    };
+
+    const result = await db.collection("admissions").updateOne(filter, updateDoc);
+
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(500).send({ message: "Update failed", error: error.message });
+  }
 });
+
 
 //  Delete a specific application
 router.delete('/:id', async (req, res) => {

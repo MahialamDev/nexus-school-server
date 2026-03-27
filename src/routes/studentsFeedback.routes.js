@@ -13,7 +13,7 @@ router.get('/feedback', async (req, res) => {
     if (!email) {
       return res.send({ message: 'not found' });
     }
-    const query = { studentEmail: email, role: 'student' };
+    const query = { studentEmail: email };
     const result = await db.collection('studentFeedback').find(query).toArray();
     res.send(result);
   } catch (error) {

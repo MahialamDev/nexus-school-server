@@ -7,37 +7,24 @@ const { getDB } = require('../config/db');
 router.get('/', async (req, res) => {
   try {
     const db = getDB();
-    const { studentRoll,  examOption, className, studentEmail } = req.query;
-    const query = { examOption, studentRoll, className, studentEmail };
+    const { studentRoll, examOption, class_name, studentEmail } = req.query;
+    // if we  want to  a see email base result then only add query *studentEmail*
+    const query = { examOption, studentRoll, class_name };
     const result = await db.collection('result').findOne(query);
     res.send(result);
-  
   } catch (error) {
     console.log(error)
   }
 });
 
-// onlyGet one user 
-router.get('/one-student', async (req, res) => {
-  try {
-    const db = getDB();
-    const { email } = req.query;
-    const query = {role:'student', email };
-    const result = await db.collection('users').findOne(query);
-    res.send(result);
-    
-  } catch (error) {
-    console.log(error);
-  }
-})
 
 // only show result student base
 router.get('/student-result', async (req, res) => {
   try {
     const db = getDB();
-    const { email, examOption, className } = req.query;
+    const { email, examOption, class_name } = req.query;
 
-    const query = { studentEmail:email,className };
+    const query = {studentEmail:email,class_name };
     if (examOption) {
       query.examOption = examOption;
 
@@ -53,27 +40,43 @@ router.get('/student-result', async (req, res) => {
   }
 })
 
+router.get('/getResult',async (req, res) => {
+  const db = getDB();
+  const {class_name,examOption}=req.query
+  const query = {}
+  if (class_name && examOption) {
+     query.class_name = class_name,
+     query.examOption=examOption
+  }
+  const result = await db.collection('result').find(query).toArray();
+  res.send(result)
+})
+
 // post Result Sheet data
 router.post('/', async (req, res) => {
   try {
     const db = getDB();
-    const { studentRoll, className, examOption,  studentEmail } =
+    const {  class_name, examOption,  studentEmail,studentRoll } =
     req.body
     
     const body = req.body;
+   
     body.studentName = body.studentName.toLowerCase();
     body.createAt = new Date();
+    body.createYear=new Date().getFullYear()
     const query = {
       studentEmail,
-      className,
+      class_name,
+      studentRoll,
       examOption,
     }
-
+   
 
     const sheet = await db.collection('result').findOne(query);
+   
     if (sheet) {
       return res.send({
-        message: 'already give a result this Student plz you only update now',
+        message: 'Already give a result this Student',
       });
     }
 

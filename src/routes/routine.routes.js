@@ -6,13 +6,13 @@ const { ObjectId } = require('mongodb');
 router.get('/', async (req, res) => {
   try {
     const db = getDB();
-    const { className } = req.query;
-    if (!className) {
+    const { class_name } = req.query;
+    if (!class_name) {
       return res.send('plz update your class')
     }
     const result = await db
-      .collection('routine')
-      .find({ department :className})
+      .collection('class_routine')
+      .find({ class_name :class_name})
       .toArray();
     res.send(result);
   } catch (error) {
@@ -33,12 +33,12 @@ router.post('/', async (req, res) => {
       subject: routine.subject,
       teacherName:routine.teacherName
     }
-    const findClass = await db.collection('routine').findOne( query );
+    const findClass = await db.collection('class_routine').findOne( query );
     if (findClass) {
       return res.send({message:'already create routine plz check and only update now'})
     }
 
-    const result = await db.collection('routine').insertOne(routine);
+    const result = await db.collection('class_routine').insertOne(routine);
     res.send(result);
   } catch (error) {
     console.log(error);
@@ -56,7 +56,7 @@ router.patch('/:id', async (req, res) => {
       $set: body
       
     };
-    const result = await db.collection('routine').updateOne(query, update);
+    const result = await db.collection('class_routine').updateOne(query, update);
     res.send(result);
     
   } catch (error) {
@@ -70,7 +70,7 @@ router.delete('/:id', async (req, res) => {
     const id = req.params.id;
     const db = getDB();
     const query = { _id: new ObjectId(id) };
-    const result = await db.collection('routine').deleteOne(query);
+    const result = await db.collection('class_routine').deleteOne(query);
     res.send(result);
   } catch (error) {
     console.log(error)

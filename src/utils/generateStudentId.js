@@ -1,5 +1,5 @@
 async function generateUniqueStudentId(db, name, className, year) {
-  const classCode = className.replace("class-", "C");
+  const classCode = `C${className}`
   const initials = (name || "AN").trim().substring(0, 2).toUpperCase();
 
   const counterId = `student_serial_${year}`;

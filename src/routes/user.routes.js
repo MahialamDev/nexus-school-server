@@ -79,30 +79,15 @@ router.post("/", async (req, res) => {
 
     const existingUser = await db.collection("users").findOne({ email: userInfo.email });
     if (existingUser) return res.status(409).json({ message: "User already exists" });
-     
-    // Set className default to class-6 if not provided
-    const className = userInfo.department || "class-6";
-    const year = new Date().getFullYear();
-
-    // id generate
-    const student_id = await generateUniqueStudentId(db, userInfo.name, className, year);
-
-    // roll generate
-    const class_roll = await generateStudentRoll(db, className, year )
-
+    
     const newUser = {
       name: userInfo.name || "Anonymous",
       email: userInfo.email,
       image: userInfo.image || "",
-      role: "student",
-      student_id,
-      class_roll,
+      role: "user",
       phone: userInfo.phone || "Not Set",
       address: userInfo.address || "Not Set",
-      department: className,
-      status: "active",               // active | graduated
-      enrollment_status: "enrolled",  // enrolled | pending | not_enrolled
-      academic_year: year, 
+      status: "active",               // active | suspend
       createdAt: new Date()
     };
 

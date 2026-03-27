@@ -1,7 +1,7 @@
 
-async function generateStudentRoll(db, department, academicYear) {
+async function generateStudentRoll(db, className, academicYear) {
   // counterId - "class-6_2026" বা "class-8_2026"
-  const counterId = `${department}_${academicYear}`;
+  const counterId = `class-${className}_${academicYear}`;
 
   const counter = await db.collection("roll_counters").findOneAndUpdate(
     { _id: counterId },

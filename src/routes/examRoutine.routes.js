@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
     const { className } = req.query;
 
     if (className) {
-        query.class = className;
+        query.class_name = className;
     }
 
     console.log(query)

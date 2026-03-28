@@ -37,7 +37,7 @@ router.post('/feedback', async (req, res) => {
       role,
     } = req.body;
 
-    // ✅ validation
+    //  validation
     if (!studentEmail || !teacherEmail || !teacherName) {
       return res.send({ message: 'Missing required fields' });
     }
@@ -76,6 +76,17 @@ router.post('/feedback', async (req, res) => {
 
     // final post data
     const result = await db.collection('studentFeedback').insertOne(feedback);
+     const newNotifications = {
+       userEmail: studentEmail,
+       type:'feedback',
+       notifications: `You got feedback form ${teacherName}`,
+       read: false,
+       seeId: result?.insertedId,
+       link:`/dashboard/profile`,
+       createAt: new Date(),
+     };
+     const notifications = await db.collection('notifications').insertOne(newNotifications);
+
     res.send(result);
   } catch (error) {
     console.log(error);

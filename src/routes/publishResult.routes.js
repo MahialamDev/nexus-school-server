@@ -81,6 +81,18 @@ router.post('/', async (req, res) => {
     }
 
     const result = await db.collection('result').insertOne(body);
+    
+    const newNotifications = {
+      userEmail: studentEmail,
+      type: 'Result',
+      notifications: `Your result for ${examOption} has been published`,
+      read: false,
+      seeId: result?.insertedId,
+      link: `/dashboard/student-result`,
+      createAt: new Date(),
+    };
+    const notifications = await db.collection('notifications').insertOne(newNotifications);
+
     res.send(result);
     
   } catch (error) {

@@ -12,6 +12,7 @@ const result = require('./routes/publishResult.routes')
 const admissionRouter =require('./routes/admission.routes')
 const examRoutine = require('./routes/examRoutine.routes')
 const bookingRouter =require('./routes/booking.routes')
+const studentRoutes = require("./routes/studentRoutes");
 
 // middleware
 app.use(express.json());
@@ -59,6 +60,6 @@ app.use('/admission', admissionRouter)
 app.use('/bookings', bookingRouter)
 
 
-
+app.use("/students", studentRoutes);
 // export app
 module.exports = app;

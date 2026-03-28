@@ -14,6 +14,7 @@ const admissionRouter =require('./routes/admission.routes')
 const examRoutine = require('./routes/examRoutine.routes')
 const bookingRouter =require('./routes/booking.routes')
 const studentsRouter =require('./routes/students.routes')
+const notifications =require('./routes/notification.routes')
 
 // middleware
 app.use(express.json());
@@ -61,7 +62,11 @@ app.use('/admission', admissionRouter)
 app.use('/bookings', bookingRouter)
 
 // students route
-app.use('/students',studentsRouter)
+app.use('/students', studentsRouter)
+
+// notification route
+app.use('/notifications',notifications)
+
 
 
 

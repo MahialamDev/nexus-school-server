@@ -8,8 +8,22 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const db = getDB();
-    const users = await db.collection("users").find().toArray();
-    res.send(users);
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const [users, total] = await Promise.all([
+      db.collection("users")
+        .find()
+        .sort({ createdAt: -1 })   // newest first (descending)
+        .skip(skip)
+        .limit(limit)
+        .toArray(),
+      db.collection("users").countDocuments(),
+    ]);
+
+    res.send({ users, total, page, totalPages: Math.ceil(total / limit) });
   } catch (err) {
     res.status(500).json({ message: "Server Error" });
   }
@@ -32,7 +46,7 @@ router.get('/student/:email', async (req, res) => {
     const db = getDB();
     const email = req.params.email;
     const query = { email: email, role: "student" };
-    
+
     const student = await db.collection("users").findOne(query);
 
     if (!student) {
@@ -79,7 +93,7 @@ router.post("/", async (req, res) => {
 
     const existingUser = await db.collection("users").findOne({ email: userInfo.email });
     if (existingUser) return res.status(409).json({ message: "User already exists" });
-    
+
     const newUser = {
       name: userInfo.name || "Anonymous",
       email: userInfo.email,
@@ -103,7 +117,7 @@ router.patch("/:email", async (req, res) => {
   try {
     const db = getDB();
     const result = await db.collection("users").updateOne(
-      { email: req.params.email }, 
+      { email: req.params.email },
       { $set: req.body }
     );
     res.send(result);

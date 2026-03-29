@@ -57,7 +57,7 @@ router.post('/feedback', async (req, res) => {
     // block feedback
     if (existing) {
       return res.send({
-        message: 'আজকে এই subject-এ already feedback দেওয়া হয়েছে',
+        message: 'today this subject feedback has been given',
       });
     }
 

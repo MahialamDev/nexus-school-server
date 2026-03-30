@@ -17,7 +17,7 @@ const studentsRouter =require('./routes/students.routes')
 const notifications =require('./routes/notification.routes')
 const studentRoutes = require("./routes/studentRoutes");
 const temp = require("./routes/tempory.routes");
-
+const paymentRoutes = require('./routes/payments.routes')
 
 // middleware
 app.use(express.json());
@@ -71,6 +71,10 @@ app.use('/students', studentsRouter)
 app.use('/notifications',notifications)
 // notification route
 app.use('/temp', temp)
+
+
+// payments
+app.use('/payments', paymentRoutes )
 
 
 

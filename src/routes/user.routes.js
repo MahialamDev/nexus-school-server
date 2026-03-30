@@ -2,13 +2,14 @@ const express = require('express');
 const { getDB } = require('../config/db');
 const { generateUniqueStudentId } = require('../utils/generateStudentId');
 const generateStudentRoll = require('../utils/generateStudentRoll');
+const { getTokenAuth, getAdminSecure } = require('../authSecure/authSecure');
+
 const router = express.Router();
 
 // all user get
-router.get('/', async (req, res) => {
+router.get('/',async (req, res) => {
   try {
     const db = getDB();
-
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;

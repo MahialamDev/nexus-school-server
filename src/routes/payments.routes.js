@@ -147,7 +147,10 @@ router.delete("/:id/delete", async (req, res) => {
     const db = getDB();
     const { id } = req.params;
     const query = { _id: new ObjectId(id) };
+    console.log(query);
+
     const result = await db.collection("payments").deleteOne(query);
+    console.log(result);
     res.send(result);
   } catch (err) {
     console.log(err);

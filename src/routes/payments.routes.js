@@ -122,13 +122,21 @@ router.post("/", async (req, res) => {
 router.get("/my-payments", async (req, res) => {
   try {
     const db = getDB();
-    const { class_name } = req.query;
+    const { class_name, email } = req.query;
     console.log(class_name);
-    const result = await db
-      .collection("payments")
-      .find({ class_name })
-      .toArray();
-    res.send(result);
+    const paymentInfo = await db.collection("payments").find({ class_name }).toArray();
+
+    const paidPayments = await db.collection("payment-success").find({ email }).toArray();
+
+    const paidIds = paidPayments.map(p => p.payment_id);
+    
+    const result = paymentInfo.map(payment => ({
+      ...payment, 
+      paid: paidIds.includes(payment._id.toString())
+    }))
+
+    res.send(result)
+    
   } catch (err) {
     console.log(err);
   }
@@ -139,10 +147,7 @@ router.delete("/:id/delete", async (req, res) => {
     const db = getDB();
     const { id } = req.params;
     const query = { _id: new ObjectId(id) };
-    console.log(query);
-
     const result = await db.collection("payments").deleteOne(query);
-    console.log(result);
     res.send(result);
   } catch (err) {
     console.log(err);

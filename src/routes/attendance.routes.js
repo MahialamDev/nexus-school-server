@@ -55,44 +55,24 @@ router.post("/", async (req, res) => {
 
 // --- GET: Fetch Attendance (Merged logic) ---
 // --- GET: Fetch Attendance (UPDATED) ---
+// Server Code (attendance router)
 router.get("/", async (req, res) => {
     try {
         const db = getDB();
-        const { className, date, startDate, endDate } = req.query;
-
+        const { className, date } = req.query;
         const query = {};
 
-        // ✅ Class filter
-        if (className) {
-            query.className = className;
-        }
+        if (className) query.className = className;
 
-        // 🔥 Date Range (NEW)
-        if (startDate && endDate) {
-            const start = new Date(startDate);
+        if (date) {
+            const searchDate = new Date(date);
+            const start = new Date(searchDate);
             start.setHours(0, 0, 0, 0);
 
-            const end = new Date(endDate);
+            const end = new Date(searchDate);
             end.setHours(23, 59, 59, 999);
 
-            query.date = {
-                $gte: start,
-                $lte: end
-            };
-        }
-
-        // 🔹 Single Date (OLD)
-        else if (date) {
-            const start = new Date(date);
-            start.setHours(0, 0, 0, 0);
-
-            const end = new Date(date);
-            end.setHours(23, 59, 59, 999);
-
-            query.date = {
-                $gte: start,
-                $lte: end
-            };
+            query.date = { $gte: start, $lte: end };
         }
 
         const attendance = await db.collection("attendance")
@@ -100,10 +80,8 @@ router.get("/", async (req, res) => {
             .sort({ date: -1 })
             .toArray();
 
-        res.status(200).send(attendance);
-
+        res.send(attendance);
     } catch (error) {
-        console.error("Get Error:", error);
         res.status(500).json({ message: "Server Error" });
     }
 });

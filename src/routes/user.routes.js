@@ -7,7 +7,7 @@ const { getTokenAuth, getAdminSecure } = require('../authSecure/authSecure');
 const router = express.Router();
 
 // all user get
-router.get('/',async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const db = getDB();
     const page = parseInt(req.query.page) || 1;
@@ -37,7 +37,7 @@ router.get('/students/all', async (req, res) => {
     const db = getDB();
     const students = await db
       .collection('users')
-      .find({ role: 'student' })
+      .find({ enrollment_status: 'enrolled' }) // role এর বদলে এটি দিন
       .toArray();
     res.send(students);
   } catch (err) {
@@ -118,9 +118,9 @@ router.post('/', async (req, res) => {
       createdAt: new Date(),
     };
 
-    
+
     const result = await db.collection('users').insertOne(newUser);
-    
+
     const tempData = {
       email: userInfo.email,
       wrongAttempts: 0,

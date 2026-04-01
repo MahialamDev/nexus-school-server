@@ -17,7 +17,8 @@ const studentsRouter =require('./routes/students.routes')
 const notifications =require('./routes/notification.routes')
 const studentRoutes = require("./routes/studentRoutes");
 const temp = require("./routes/tempory.routes");
-const paymentRoutes = require('./routes/payments.routes')
+const paymentRoutes = require('./routes/payments.routes');
+const nexusChatBot = require('./routes/nexus_chatbot.routes');
 
 // middleware
 app.use(express.json());
@@ -79,7 +80,14 @@ app.use('/payments', paymentRoutes )
 
 
 
-
+// student routes also only get student
 app.use("/students", studentRoutes);
+
+// ai route
+app.use('/nexus-ai', nexusChatBot);
+
+
+
+
 // export app
 module.exports = app;

@@ -44,6 +44,19 @@ router.get('/students/all', async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 });
+router.get('/teachers/all', async (req, res) => {
+  try {
+    const db = getDB();
+    const teachers = await db
+      .collection('users')
+      .find({ role: 'teacher' })
+      .toArray();
+
+    res.send(teachers);
+  } catch (err) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
 
 // specific student get with email
 router.get('/student/:email', async (req, res) => {
@@ -145,6 +158,32 @@ router.patch('/:email', async (req, res) => {
     res.send(result);
   } catch (err) {
     res.status(500).send({ message: 'Update Error' });
+  }
+});
+
+// user delete by email
+router.delete('/:email', async (req, res) => {
+  try {
+    const db = getDB();
+    const email = req.params.email;
+
+    const userResult = await db.collection('users').deleteOne({ email: email });
+
+    if (userResult.deletedCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    await db.collection('temp').deleteOne({ email: email });
+
+    res.send({
+      success: true,
+      message: 'User and associated data deleted successfully',
+      deletedCount: userResult.deletedCount
+    });
+
+  } catch (err) {
+    console.error("Delete Error:", err);
+    res.status(500).send({ message: 'Internal Server Error during deletion' });
   }
 });
 

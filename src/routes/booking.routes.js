@@ -46,7 +46,7 @@ router.post("/", async (req, res) => {
       teacherName,
       teacherEmail,
       studentEmail,
-      studentName, // <-- এখন এটি ভেরিয়েবল হিসেবে এভেইলএবল
+      studentName, 
       studentImage: studentImage || "",
       date,
       slot,

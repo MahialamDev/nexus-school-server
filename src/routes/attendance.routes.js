@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { getDB } = require("../config/db");
 
-// Take Attendance (Save)
+// --- POST: Take Attendance (Save) ---
 router.post("/", async (req, res) => {
     try {
         const db = getDB();
@@ -13,8 +13,10 @@ router.post("/", async (req, res) => {
         }
 
         const selectedDate = new Date(date);
+        // টাইমস্ট্যাম্প রিমুভ করে শুধুমাত্র দিনটি চেক করার জন্য 00:00:00 সেট করা ভালো
+        selectedDate.setHours(0, 0, 0, 0);
 
-        // 🔴 Duplicate Check (Same class + subject + date)
+        // 🔴 Duplicate Check
         const existingAttendance = await db.collection("attendance").findOne({
             className,
             subject,
@@ -24,7 +26,7 @@ router.post("/", async (req, res) => {
         if (existingAttendance) {
             return res.status(409).json({
                 success: false,
-                message: "Attendance already taken for this date"
+                message: "Attendance already taken for this class and subject on this date"
             });
         }
 
@@ -46,58 +48,40 @@ router.post("/", async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("Post Error:", error);
         res.status(500).json({ message: "Server Error" });
     }
 });
 
-// Get Attendance by Class + Date
+// --- GET: Fetch Attendance (Merged logic) ---
+// --- GET: Fetch Attendance (UPDATED) ---
+// Server Code (attendance router)
 router.get("/", async (req, res) => {
     try {
         const db = getDB();
         const { className, date } = req.query;
-
         const query = {};
+
         if (className) query.className = className;
-        if (date) query.date = new Date(date);
 
-        const data = await db.collection("attendance").find(query).toArray();
+        if (date) {
+            const searchDate = new Date(date);
+            const start = new Date(searchDate);
+            start.setHours(0, 0, 0, 0);
 
-        res.send(data);
-    } catch (error) {
-        res.status(500).json({ message: "Server Error" });
-    }
-});
+            const end = new Date(searchDate);
+            end.setHours(23, 59, 59, 999);
 
-router.get("/", async (req, res) => {
-    try {
-        const db = getDB();
-        const { className, date } = req.query;
-
-        if (!date) {
-            return res.status(400).json({ message: "Date is required" });
+            query.date = { $gte: start, $lte: end };
         }
 
-        const startDate = new Date(date);
-        startDate.setHours(0, 0, 0, 0);
-
-        const endDate = new Date(date);
-        endDate.setHours(23, 59, 59, 999);
-
-        const query = {
-            date: { $gte: startDate, $lte: endDate }
-        };
-
-        if (className) {
-            query.className = className;
-        }
-
-        const attendance = await db.collection("attendance").find(query).toArray();
+        const attendance = await db.collection("attendance")
+            .find(query)
+            .sort({ date: -1 })
+            .toArray();
 
         res.send(attendance);
-
     } catch (error) {
-        console.error(error);
         res.status(500).json({ message: "Server Error" });
     }
 });

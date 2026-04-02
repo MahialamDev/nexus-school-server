@@ -14,6 +14,12 @@ const admissionRouter =require('./routes/admission.routes')
 const examRoutine = require('./routes/examRoutine.routes')
 const bookingRouter =require('./routes/booking.routes')
 const studentsRouter =require('./routes/students.routes')
+const notifications =require('./routes/notification.routes')
+const studentRoutes = require("./routes/studentRoutes");
+const temp = require("./routes/tempory.routes");
+const paymentRoutes = require('./routes/payments.routes');
+const nexusChatBot = require('./routes/nexus_chatbot.routes');
+const counter = require('./routes/counter.routes');
 
 // middleware
 app.use(express.json());
@@ -61,7 +67,28 @@ app.use('/admission', admissionRouter)
 app.use('/bookings', bookingRouter)
 
 // students route
-app.use('/students',studentsRouter)
+app.use('/students', studentsRouter)
+
+// notification route
+app.use('/notifications',notifications)
+// notification route
+app.use('/temp', temp)
+
+
+// payments
+app.use('/payments', paymentRoutes )
+
+
+
+
+// student routes also only get student
+app.use("/students", studentRoutes);
+
+// ai route
+app.use('/nexus-ai', nexusChatBot);
+
+// all count student and users
+app.use('/counter', counter);
 
 
 

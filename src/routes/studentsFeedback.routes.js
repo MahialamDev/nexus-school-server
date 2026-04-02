@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const {getDB}=require('../config/db')
+const {getDB}=require('../config/db');
+const { getTokenAuth, getTeacherSecure } = require('../authSecure/authSecure');
 
 
 
 
 // get student feedback data 
-router.get('/feedback', async (req, res) => {
+router.get('/feedback',getTokenAuth,  async (req, res) => {
   try {
-   const db= getDB()
+    const db = getDB();
     const email = req.query.email;
     if (!email) {
       return res.send({ message: 'not found' });
@@ -17,13 +18,12 @@ router.get('/feedback', async (req, res) => {
     const result = await db.collection('studentFeedback').find(query).toArray();
     res.send(result);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-
-})
+});
 
 // post student feedback
-router.post('/feedback', async (req, res) => {
+router.post('/feedback', getTokenAuth, async (req, res) => {
   try {
     const db = getDB();
     const {
@@ -37,7 +37,7 @@ router.post('/feedback', async (req, res) => {
       role,
     } = req.body;
 
-    // ✅ validation
+    //  validation
     if (!studentEmail || !teacherEmail || !teacherName) {
       return res.send({ message: 'Missing required fields' });
     }
@@ -57,7 +57,7 @@ router.post('/feedback', async (req, res) => {
     // block feedback
     if (existing) {
       return res.send({
-        message: 'আজকে এই subject-এ already feedback দেওয়া হয়েছে',
+        message: 'today this subject feedback has been given',
       });
     }
 
@@ -76,6 +76,17 @@ router.post('/feedback', async (req, res) => {
 
     // final post data
     const result = await db.collection('studentFeedback').insertOne(feedback);
+    const newNotifications = {
+      userEmail: studentEmail,
+      type: 'feedback',
+      notifications: `You got feedback form ${teacherName}`,
+      read: false,
+      seeId: result?.insertedId,
+      link: `/dashboard/profile`,
+      createAt: new Date(),
+    };
+    const notifications = await db.collection('notifications').insertOne(newNotifications);
+
     res.send(result);
   } catch (error) {
     console.log(error);

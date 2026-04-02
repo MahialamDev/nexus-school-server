@@ -6,12 +6,11 @@ const { ObjectId } = require("mongodb");
 // get all notices
 router.get("/", async (req, res) => {
     try {
+        
         const db = getDB();
+        const today = new Date();
 
-        const notices = await db.collection("notices")
-            .find()
-            .sort({ createdAt: -1 })
-            .toArray();
+        const notices = await db.collection('notices').find({ expiryDate: { $gte: today } }).sort({ createdAt: -1 }).toArray();
 
         res.send(notices);
     } catch (err) {
@@ -35,14 +34,28 @@ router.post("/", async (req, res) => {
         }
 
         const newNotice = {
-            title: noticeInfo.title,
-            content: noticeInfo.content,
-            category: noticeInfo.category || "General",
-            priority: noticeInfo.priority || "Normal",
-            createdAt: new Date()
+          title: noticeInfo.title,
+          content: noticeInfo.content,
+          category: noticeInfo.category || 'General',
+          priority: noticeInfo.priority || 'Normal',
+          startAt: new Date(noticeInfo.startAt),
+          expiryDate: new Date(noticeInfo.expiryDate),
+          createdAt: new Date(),
         };
 
         const result = await db.collection("notices").insertOne(newNotice);
+        const newNotifications = {
+          type: 'notice',
+          notifications: `school notice :  ${noticeInfo.title}`,
+          read: false,
+          open:'public',
+          for:'student',
+          seeId: result?.insertedId,
+          link: `/dashboard/school-notices`,
+          createAt: new Date(),
+        };
+        const notifications = await db.collection('notifications').insertOne(newNotifications);
+
 
         res.send(result);
     } catch (err) {

@@ -7,18 +7,18 @@ const { ObjectId } = require('mongodb');
 router.get('/', async (req, res) => {
  try {
    const db = getDB();
-   const { email } = req.query;
+   const { email,role } = req.query;
    
    if (!email) {
     return res.status(400).send({ message: 'Email is required' });
    }
-   const query = { userEmail: email, read: false };
+   const query = {
+     read: false,
+     $or: [{ userEmail: email }, { open: 'public', for: role }],
+   }
    
 
-   const result = await db
-     .collection('notifications')
-     .find(query)
-     .sort({ createAt: -1 }).limit(10).toArray();
+   const result = await db.collection('notifications').find(query).sort({ createAt: -1 }).limit(10).toArray();
    res.send(result);
  } catch (error) {
   console.log(error)

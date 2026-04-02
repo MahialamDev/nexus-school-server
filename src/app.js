@@ -19,6 +19,7 @@ const studentRoutes = require("./routes/studentRoutes");
 const temp = require("./routes/tempory.routes");
 const paymentRoutes = require('./routes/payments.routes');
 const nexusChatBot = require('./routes/nexus_chatbot.routes');
+const counter = require('./routes/counter.routes');
 
 // middleware
 app.use(express.json());
@@ -85,6 +86,9 @@ app.use("/students", studentRoutes);
 
 // ai route
 app.use('/nexus-ai', nexusChatBot);
+
+// all count student and users
+app.use('/counter', counter);
 
 
 

@@ -85,9 +85,7 @@ router.post('/feedback', getTokenAuth, async (req, res) => {
       link: `/dashboard/profile`,
       createAt: new Date(),
     };
-    const notifications = await db
-      .collection('notifications')
-      .insertOne(newNotifications);
+    const notifications = await db.collection('notifications').insertOne(newNotifications);
 
     res.send(result);
   } catch (error) {

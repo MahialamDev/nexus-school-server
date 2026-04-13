@@ -95,6 +95,6 @@ It supports administrators, teachers, and students by handling authentication, d
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/your-backend-link
+git clone https://github.com/MahialamDev/nexus-school-server.git
 npm install
 npm run dev
